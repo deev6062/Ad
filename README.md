@@ -83,6 +83,20 @@ try{
 </body>
 </html>
 
+CREATE TABLE employee (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    Password VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL,
+    Country VARCHAR(50) NOT NULL,
+    Address VARCHAR(255),
+    PhoneNumber VARCHAR(15),
+    DOB DATE,
+    Gender VARCHAR(10),
+    Interests VARCHAR(255)
+);
+
+
 ==============================================================================
 
 viewData
@@ -291,3 +305,5 @@ try {
 
 </body>
 </html>
+
+
