@@ -1,218 +1,186 @@
-activity_main.xml (insert)
-
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp">
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Name"
-        android:id="@+id/reg_name"
-        android:padding="20dp"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Email"
-        android:id="@+id/reg_email"
-        android:padding="20dp"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Password"
-        android:id="@+id/reg_password"
-        android:padding="20dp"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter Gender"
-        android:id="@+id/reg_gender"
-        android:padding="20dp"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:onClick="registerUser"/>
-
-</androidx.appcompat.widget.LinearLayoutCompat>
-
-================================================================================
-
-MainActivity.java
 
 
-package com.example.crud;
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Registration.aspx.cs" Inherits="Crud.Registration" %>
 
-import androidx.appcompat.app.AppCompatActivity;
+<!DOCTYPE html>
 
-import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>User Registration Form</h2>
+            <asp:Label ID="lblusername" runat="server" text="Enter Username"></asp:Label>
+            <asp:textbox ID="txtusername" runat="server"></asp:textbox><br />
+            <asp:Label id="lblemail" runat="server" text="Enter Emailid"></asp:Label>
+            <asp:textbox ID="txtemail" runat="server"></asp:textbox><br />
+            <asp:Label id="lblpassword" runat="server" text="Enter Password"></asp:Label>
+            <asp:textbox ID="txtpassword" TextMode="Password" runat="server"></asp:textbox><br />
+            <asp:button ID="btnregister" Text="Register" OnClick="btnRegister" runat="server" />
+        </div>
 
-public class MainActivity extends AppCompatActivity {
-
-    EditText reg_name,reg_email,reg_password,reg_gender;
-    DbHelper dbhelper;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        reg_name = findViewById(R.id.reg_name);
-        reg_email = findViewById(R.id.reg_email);
-        reg_password = findViewById(R.id.reg_password);
-        reg_gender = findViewById(R.id.reg_gender);
-
-        dbhelper = new DbHelper(getApplicationContext());
+    </form>
+</body>
+</html>
 
 
-    }
 
-    public void registerUser(View view)
+=============================================================================================================
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+
+namespace Crud
+{
+    public partial class Viewusers : System.Web.UI.Page
     {
-        String name = reg_name.getText().toString();
-        String email = reg_email.getText().toString();
-        String password = reg_password.getText().toString();
-        String gender = reg_gender.getText().toString();
+        protected void Page_Load(object sender, EventArgs e)
+        {
+		
+		string connection = "";
+		string username = "txtusername.Text";
+		string email = "email.Text";
+		string password = "password.Text";
 
-        dbhelper.registerUser(name,email,password,gender);
-        Toast.makeText(this,"User Registered Successfully",Toast.LENGTH_SHORT).show();
+		using(Sqlconnection con = new Sqlconnection(connection))
+		{
 
-        // For set text as empty whenever user is register
-
-        reg_name.setText("");
-        reg_email.setText("");
-        reg_password.setText("");
-        reg_gender.setText("");
+			string query = "insert into Reguser(username,email,password) values (@username,@eamil,				@password)";
+			using(SqlCommnd cmd = new SqlCommand(query,con))
+			{
+				cmd.Parameters.AddWithValues("username",username);
+				cmd.Parameters.AddWithValues("email",email);
+				cmd.Parameters.AddWithValues("password",password);
+				con.Open();
+				cmd.ExecuteNonQuery();
+			}	
+		}
+        }
     }
 }
 
 
-
-==============================================================
-
-DbHelper.java
-
-package com.example.crud;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
-
-public class DbHelper extends SQLiteOpenHelper {
-
-    private static final String Database_name = "demo_db";
-    private static final int Database_version = 1;
+===============================================================================================
 
 
-    public DbHelper(@Nullable Context context) {
-        super(context, Database_name, null,Database_version );
-    }
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="Crud.Default" %>
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String create_table = "create table register(id integer primary key autoincrement,name text,email text,password text,gender text)";
-        db.execSQL(create_table);
+<!DOCTYPE html>
 
-    }
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>CRUD Operations</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <h2>User Details</h2>
+            <div>
+                <asp:TextBox ID="txtName" runat="server" placeholder="Name"></asp:TextBox>
+                <asp:TextBox ID="txtAge" runat="server" placeholder="Age"></asp:TextBox>
+                <asp:DropDownList ID="ddlGender" runat="server">
+                    <asp:ListItem Text="Male" Value="Male"></asp:ListItem>
+                    <asp:ListItem Text="Female" Value="Female"></asp:ListItem>
+                </asp:DropDownList>
+                <asp:Button ID="btnAdd" runat="server" Text="Add" OnClick="btnAdd_Click" />
+            </div>
+            <br />
+            <asp:GridView ID="GridView1" runat="server" AutoGenerateColumns="False" OnRowDeleting="GridView1_RowDeleting" DataKeyNames="Id">
+                <Columns>
+                    <asp:BoundField DataField="Id" HeaderText="ID" ReadOnly="True" />
+                    <asp:BoundField DataField="Name" HeaderText="Name" />
+                    <asp:BoundField DataField="Age" HeaderText="Age" />
+                    <asp:BoundField DataField="Gender" HeaderText="Gender" />
+                    <asp:CommandField ShowDeleteButton="True" />
+                </Columns>
+            </asp:GridView>
+        </div>
+    </form>
+</body>
+</html>
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists register");
-        onCreate(db);
-    }
+
+=======================================================================================
 
 
+using System;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Web.UI.WebControls;
 
-    public void registerUser(String name, String email, String password, String gender) {
-        SQLiteDatabase sqldb = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("Name",name);
-        cv.put("Email",email);
-        cv.put("Password",password);
-        cv.put("Gender",gender);
-        sqldb.insert("register",null,cv);
+namespace Crud
+{
+    public partial class Default : System.Web.UI.Page
+    {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (!IsPostBack)
+            {
+                BindGridView();
+            }
+        }
 
+        protected void BindGridView()
+        {
+            string connectionString = "Data Source=DEVXX\\SQLEXPRESS;Initial Catalog=test;Integrated Security=True;";
+            string query = "SELECT Id, Name, Age, Gender FROM Users";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                GridView1.DataSource = reader;
+                GridView1.DataBind();
+            }
+        }
+
+        protected void btnAdd_Click(object sender, EventArgs e)
+        {
+            string name = txtName.Text;
+            int age = Convert.ToInt32(txtAge.Text);
+            string gender = ddlGender.SelectedValue;
+
+            string connectionString = "Data Source=DEVXX\\SQLEXPRESS;Initial Catalog=test;Integrated Security=True;";
+            string query = "INSERT INTO Users (Name, Age, Gender) VALUES (@Name, @Age, @Gender)";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Name", name);
+                command.Parameters.AddWithValue("@Age", age);
+                command.Parameters.AddWithValue("@Gender", gender);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            BindGridView();
+        }
+
+        protected void GridView1_RowDeleting(object sender, GridViewDeleteEventArgs e)
+        {
+            int userId = Convert.ToInt32(GridView1.DataKeys[e.RowIndex].Value);
+
+            string connectionString = "Data Source=DEVXX\\SQLEXPRESS;Initial Catalog=test;Integrated Security=True;";
+            string query = "DELETE FROM Users WHERE Id = @Id";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                command.Parameters.AddWithValue("@Id", userId);
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            BindGridView();
+        }
     }
 }
 
-=================================================================================================================
 
-
-package com.example.crud;
-
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-
-public class DbHelper extends SQLiteOpenHelper {
-
-    private static final String Database_name = "demo_db";
-    private static final int Database_version = 1;
-
-    public DbHelper(Context context) {
-        super(context, Database_name, null, Database_version);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String create_table = "create table register(id integer primary key autoincrement,name text,email text,password text,gender text)";
-        db.execSQL(create_table);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS register");
-        onCreate(db);
-    }
-
-    public void registerUser(String name, String email, String password, String gender) {
-        SQLiteDatabase sqldb = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("name", name);
-        cv.put("email", email);
-        cv.put("password", password);
-        cv.put("gender", gender);
-        sqldb.insert("register", null, cv);
-        sqldb.close();
-    }
-
-    public void deleteUser(int userId) {
-        SQLiteDatabase sqldb = this.getWritableDatabase();
-        sqldb.delete("register", "id=?", new String[]{String.valueOf(userId)});
-        sqldb.close();
-    }
-
-    public void updateUser(int userId, String name, String email, String password, String gender) {
-        SQLiteDatabase sqldb = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put("name", name);
-        cv.put("email", email);
-        cv.put("password", password);
-        cv.put("gender", gender);
-        sqldb.update("register", cv, "id=?", new String[]{String.valueOf(userId)});
-        sqldb.close();
-    }
-
-    public Cursor getUsers() {
-        SQLiteDatabase sqldb = this.getReadableDatabase();
-        return sqldb.query("register", null, null, null, null, null, null);
-    }
-}
